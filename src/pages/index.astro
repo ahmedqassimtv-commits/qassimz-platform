@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Hero from '../components/Hero.astro'
+import StoriesSwipeDeck from '../components/StoriesSwipeDeck'
+import ImageCompare from '../components/ImageCompare'
+import { historicalStories } from '../data/stories'
+import { reviews } from '../data/reviews'
+import { videos } from '../data/videos'
+import { getCollection } from 'astro:content'
+
+const articles = (await getCollection('articles')).sort(
+  (a, b) => b.data.date.localeCompare(a.data.date),
+)
+const latestArticle = articles[0]
+const marqueeItems = ['الحكايات', 'الفِردِكت', 'الفيديوهات', 'المقالات', 'ON AIR', 'مساحة']
+---
+
+<BaseLayout title="الرئيسية" description="قَاسِمز — مساحة للصورة، والحكاية التي وراءها. فيديوهات، مراجعات، حكايات، ومقالات.">
+  <Hero
+    headline="مساحة للصورة، والحكاية التي وراءها."
+    description="قَاسِمز منصة محتوى عربية: فيديوهات، مراجعات سينمائية، حكايات من الأرشيف، ومقالات عن الصورة والسينما — بقلم أحمد قاسم."
+  />
+
+  <!-- شريط متحرك -->
+  <div class="overflow-hidden border-y border-line py-3" aria-hidden="true">
+    <div class="marquee-track flex w-max gap-8 whitespace-nowrap font-display text-lg font-bold text-ink-dim">
+      {[...marqueeItems, ...marqueeItems, ...marqueeItems].map((item) => (
+        <span>{item} ✦</span>
+      ))}
+    </div>
+  </div>
+
+  <!-- رزمة الحكايات -->
+  <section class="mx-auto max-w-6xl px-5 pt-20" data-reveal>
+    <h2 class="font-display text-3xl font-black md:text-4xl">أرشيف الحكايات</h2>
+    <p class="mt-2 text-ink-dim">ثلاث حكايات حقيقية من الأرشيف — اسحب البطاقة أو استخدم الأزرار.</p>
+    <div class="mt-8">
+      <StoriesSwipeDeck stories={historicalStories} client:visible />
+    </div>
+  </section>
+
+  <!-- مقارنة قبل/بعد -->
+  <section class="mx-auto max-w-6xl px-5 pt-20" data-reveal>
+    <h2 class="font-display text-3xl font-black md:text-4xl">الصورة قبل وبعد</h2>
+    <p class="mt-2 text-ink-dim">اللقطة نفسها: أبيض وأسود مقابل ملوّن — حرّك المنزلق.</p>
+    <div class="mt-8">
+      <ImageCompare image={historicalStories[0].image} alt={historicalStories[0].title} client:visible />
+    </div>
+  </section>
+
+  <!-- أحدث المراجعات -->
+  <section class="mx-auto max-w-6xl px-5 pt-20" data-reveal>
+    <div class="flex items-baseline justify-between gap-4">
+      <h2 class="font-display text-3xl font-black md:text-4xl">الفِردِكت — أحدث المراجعات</h2>
+      <a href="/verdict/movies" class="text-sm font-bold text-accent">كل المراجعات ←</a>
+    </div>
+    <div class="mt-8 grid gap-5 md:grid-cols-3">
+      {reviews.map((review) => (
+        <article class="card overflow-hidden">
+          <a href={`https://www.youtube.com/watch?v=${review.youtubeId}`} target="_blank" rel="noreferrer">
+            <img
+              src={`https://i.ytimg.com/vi/${review.youtubeId}/hqdefault.jpg`}
+              alt={review.titleAr}
+              class="h-44 w-full object-cover"
+              loading="lazy"
+            />
+          </a>
+          <div class="p-5">
+            <p class="text-sm text-ink-dim">{review.mediaType} · <bdi>{review.date}</bdi></p>
+            <h3 class="font-display mt-1 text-xl font-black">{review.titleAr} — <span dir="ltr">{review.title}</span></h3>
+            <p class="mt-2 text-ink-dim">{review.verdict}</p>
+            <p class="mt-3 font-bold text-accent">التقييم: <bdi>{review.rating} / 10</bdi></p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- أحدث الفيديوهات -->
+  <section class="mx-auto max-w-6xl px-5 pt-20" data-reveal>
+    <div class="flex items-baseline justify-between gap-4">
+      <h2 class="font-display text-3xl font-black md:text-4xl">الفيديوهات</h2>
+      <a href="/videos" class="text-sm font-bold text-accent">كل الفيديوهات ←</a>
+    </div>
+    <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {videos.map((video) => (
+        <article class="card overflow-hidden">
+          <a href={`https://www.youtube.com/watch?v=${video.youtubeId}`} target="_blank" rel="noreferrer">
+            <img
+              src={`https://i.ytimg.com/vi/${video.youtubeId}/hqdefault.jpg`}
+              alt={video.title}
+              class="h-36 w-full object-cover"
+              loading="lazy"
+            />
+          </a>
+          <div class="p-4">
+            <p class="text-xs text-ink-dim">{video.category} · <bdi>{video.date}</bdi></p>
+            <h3 class="font-display mt-1 font-black">{video.title}</h3>
+            <p class="mt-1 text-sm text-ink-dim">{video.summary}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- أحدث مقال -->
+  {latestArticle && (
+    <section class="mx-auto max-w-6xl px-5 pt-20" data-reveal>
+      <h2 class="font-display text-3xl font-black md:text-4xl">من المقالات</h2>
+      <article class="card mt-8 p-8">
+        <p class="text-sm text-ink-dim">{latestArticle.data.category} · <bdi>{latestArticle.data.date}</bdi></p>
+        <h3 class="font-display mt-2 text-2xl font-black">{latestArticle.data.title}</h3>
+        <p class="mt-3 text-ink-dim">{latestArticle.data.excerpt}</p>
+        <a href={`/articles/${latestArticle.slug}`} class="mt-4 inline-block font-bold text-accent">اقرأ المقال ←</a>
+      </article>
+    </section>
+  )}
+</BaseLayout>

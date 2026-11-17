@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import EmptyState from '../components/EmptyState.astro'
+import { mahkaaStories } from '../data/space'
+---
+
+<BaseLayout title="مَحْكاة" description="مَحْكاة — حكايات مصوّرة ومتسلسلة في قَاسِمز.">
+  <section class="mx-auto max-w-6xl px-5 pt-16">
+    <h1 data-headline class="font-display text-4xl font-black md:text-5xl">مَحْكاة</h1>
+    <p class="mt-3 text-ink-dim">حكايات مصوّرة ومتسلسلة.</p>
+    <div class="mt-10">
+      {mahkaaStories.length === 0 ? (
+        <EmptyState
+          title="لا توجد حكايات مَحْكاة بعد"
+          body="لم تُنشر أي حكاية هنا حتى الآن. حين تتوفر مادة حقيقية ستظهر في هذا القسم."
+        />
+      ) : (
+        <div class="grid gap-5 md:grid-cols-2">
+          {mahkaaStories.map((story) => (
+            <article class="card p-7">
+              <h2 class="font-display text-2xl font-black">{story.title}</h2>
+              <p class="mt-2 text-ink-dim">{story.description}</p>
+            </article>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

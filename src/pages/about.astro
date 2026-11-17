@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { historicalStories } from '../data/stories'
+import { reviews } from '../data/reviews'
+import { videos } from '../data/videos'
+import { getCollection } from 'astro:content'
+
+const articles = await getCollection('articles')
+const total = historicalStories.length + reviews.length + videos.length + articles.length
+---
+
+<BaseLayout title="عن الموقع" description="عن قَاسِمز — منصة محتوى عربية بقلم أحمد قاسم.">
+  <section class="mx-auto max-w-6xl px-5 pt-16">
+    <h1 data-headline class="font-display text-4xl font-black md:text-5xl">عن قَاسِمز</h1>
+    <p class="mt-6 max-w-2xl text-lg leading-9">
+      قَاسِمز منصة محتوى عربية: فيديوهات، مراجعات سينمائية، حكايات من الأرشيف، ومقالات عن الصورة والسينما.
+      الفكرة بسيطة — مساحة للصورة، والحكاية التي وراءها.
+    </p>
+    <p class="mt-4 max-w-2xl text-ink-dim">بقلم أحمد قاسم.</p>
+
+    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" data-reveal>
+      <div class="card p-6 text-center">
+        <p class="font-display text-4xl font-black text-accent"><bdi>{historicalStories.length}</bdi></p>
+        <p class="mt-1 text-ink-dim">حكايات في الأرشيف</p>
+      </div>
+      <div class="card p-6 text-center">
+        <p class="font-display text-4xl font-black text-accent"><bdi>{reviews.length}</bdi></p>
+        <p class="mt-1 text-ink-dim">مراجعات في الفِردِكت</p>
+      </div>
+      <div class="card p-6 text-center">
+        <p class="font-display text-4xl font-black text-accent"><bdi>{videos.length}</bdi></p>
+        <p class="mt-1 text-ink-dim">فيديوهات منشورة</p>
+      </div>
+      <div class="card p-6 text-center">
+        <p class="font-display text-4xl font-black text-accent"><bdi>{articles.length}</bdi></p>
+        <p class="mt-1 text-ink-dim">مقالات منشورة</p>
+      </div>
+    </div>
+
+    <p class="mt-10 text-ink-dim" data-reveal>
+      إجمالي المحتوى المنشور حتى الآن: <bdi class="font-bold text-ink">{total}</bdi> مادة.
+    </p>
+
+    <h2 class="font-display mt-16 text-2xl font-black" data-reveal>تابع قَاسِمز</h2>
+    <div class="mt-4 flex flex-wrap gap-3" data-reveal>
+      <a href="https://x.com/ahmedqassimtv" target="_blank" rel="noreferrer" class="card px-5 py-3 font-bold hover:border-accent">إكس @ahmedqassimtv</a>
+      <a href="https://www.facebook.com/AhmedQassimTV/" target="_blank" rel="noreferrer" class="card px-5 py-3 font-bold hover:border-accent">فيسبوك</a>
+      <a href="https://www.youtube.com/@AhmedQassimTV" target="_blank" rel="noreferrer" class="card px-5 py-3 font-bold hover:border-accent">يوتيوب @AhmedQassimTV</a>
+    </div>
+  </section>
+</BaseLayout>

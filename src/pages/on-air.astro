@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import EmptyState from '../components/EmptyState.astro'
+---
+
+<BaseLayout title="ON AIR" description="ON AIR — البث المباشر وحلقات قَاسِمز.">
+  <section class="mx-auto max-w-6xl px-5 pt-16">
+    <h1 data-headline class="font-display text-4xl font-black md:text-5xl">ON AIR</h1>
+    <p class="mt-3 text-ink-dim">البث المباشر والحلقات الصوتية.</p>
+    <div class="mt-10">
+      <EmptyState
+        title="لا يوجد بث مباشر الآن"
+        body="حين تبدأ حلقة جديدة ستظهر هنا. في هذه الأثناء يمكنك مشاهدة الفيديوهات أو قراءة المقالات."
+      />
+    </div>
+    <div class="mt-8 text-center">
+      <a href="/videos" class="font-bold text-accent">شاهد الفيديوهات ←</a>
+    </div>
+  </section>
+</BaseLayout>

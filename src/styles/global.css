@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+/*
+  قَاسِمز — نظام الثيمات: ثلاثة ثيمات فقط (أخضر / أحمر / لبني).
+  الألوان عبر متغيرات CSS على <html data-theme="...">،
+  وTailwind v4 يربطها عبر @theme inline فتصبح أدوات مثل bg-bg وtext-ink.
+  لا letter-spacing على العربية أبدًا — القاعدة ملزمة في كل المكوّنات.
+*/
+
+:root {
+  --radius: 1.25rem;
+}
+
+[data-theme="green"] {
+  --bg: #0c1a10;
+  --surface: #122619;
+  --surface-2: #1a3524;
+  --ink: #eaf5ec;
+  --ink-dim: #a9c4ae;
+  --line: rgba(234, 245, 236, 0.14);
+  --accent: #34d399;
+  --accent-ink: #06281a;
+  --glow: 52 211 153;
+}
+
+[data-theme="red"] {
+  --bg: #1d0d0d;
+  --surface: #2a1212;
+  --surface-2: #3a1a1a;
+  --ink: #fbeAEA;
+  --ink-dim: #d9a8a8;
+  --line: rgba(251, 234, 234, 0.14);
+  --accent: #f87171;
+  --accent-ink: #2b0606;
+  --glow: 248 113 113;
+}
+
+[data-theme="blue"] {
+  /* الثيم اللبني — كما قرره المستخدم: خلفية سماوية فاتحة وحبر كحلي */
+  --bg: #dce9f7;
+  --surface: #edf4fc;
+  --surface-2: #ffffff;
+  --ink: #0f2a44;
+  --ink-dim: #3d5a78;
+  --line: rgba(15, 42, 68, 0.16);
+  --accent: #2563eb;
+  --accent-ink: #ffffff;
+  --glow: 37 99 235;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-dim: var(--ink-dim);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --font-display: "Cairo", "Noto Kufi Arabic", "Noto Sans Arabic", system-ui, sans-serif;
+  --font-body: "Noto Sans Arabic", "Cairo", system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.8; /* العربية تحتاج ارتفاع سطر ~1.8 */
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display);
+  line-height: 1.5;
+}
+
+/* لا letter-spacing على النص العربي — أبدًا */
+:lang(ar) {
+  letter-spacing: 0 !important;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* زجاج خفيف للشريط العلوي — ضبابية خفيفة فقط، بلا انكسار */
+.glass-nav {
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  border-bottom: 1px solid var(--line);
+}
+
+/* بطاقة عامة */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+/* شريط متحرك (marquee) — الاتجاه يُقلب في RTL عبر logical transform */
+@keyframes qz-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(50%);
+  }
+}
+.marquee-track {
+  animation: qz-marquee 28s linear infinite;
+}
+[dir="rtl"] .marquee-track {
+  animation-name: qz-marquee;
+}
+
+/* احترام تفضيل تقليل الحركة */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Lenis: يمنع قفز التمرير الأصلي أثناء التهيئة */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}

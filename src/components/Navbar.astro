@@ -1,0 +1,84 @@
+---
+// شريط علوي نظيف: زجاج خفيف (ضبابية خفيفة فقط) — بلا انكسار سائل.
+const links = [
+  { href: '/', label: 'الرئيسية' },
+  { href: '/videos', label: 'الفيديوهات' },
+  { href: '/verdict/movies', label: 'الفِردِكت' },
+  { href: '/stories', label: 'الحكايات' },
+  { href: '/articles', label: 'المقالات' },
+  { href: '/on-air', label: 'ON AIR' },
+  { href: '/mahkaa', label: 'مساحة' },
+  { href: '/about', label: 'عن الموقع' },
+]
+const current = Astro.url.pathname
+---
+
+<header class="glass-nav sticky top-0 z-50">
+  <div class="mx-auto max-w-6xl px-5">
+    <div class="flex h-16 items-center justify-between gap-4">
+      <a href="/" class="font-display text-2xl font-black tracking-normal" aria-label="قَاسِمز — الرئيسية">
+        قَاسِمز
+      </a>
+
+      <nav class="hidden items-center gap-5 text-sm font-medium lg:flex" aria-label="التنقل الرئيسي">
+        {
+          links.map((link) => (
+            <a
+              href={link.href}
+              aria-current={current === link.href ? 'page' : undefined}
+              class:list={[
+                'transition-colors hover:text-accent',
+                current === link.href ? 'text-accent font-bold' : 'text-ink',
+              ]}
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="flex items-center gap-1.5" role="group" aria-label="اختيار الثيم">
+        <button type="button" data-theme-btn="green" class="rounded-full border border-line px-3 py-1 text-xs font-bold" aria-label="الثيم الأخضر">أخضر</button>
+        <button type="button" data-theme-btn="red" class="rounded-full border border-line px-3 py-1 text-xs font-bold" aria-label="الثيم الأحمر">أحمر</button>
+        <button type="button" data-theme-btn="blue" class="rounded-full border border-line px-3 py-1 text-xs font-bold" aria-label="الثيم اللبني">لبني</button>
+      </div>
+    </div>
+
+    <nav class="flex gap-4 overflow-x-auto pb-3 text-sm font-medium lg:hidden" aria-label="التنقل الرئيسي — موبايل">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            aria-current={current === link.href ? 'page' : undefined}
+            class:list={[
+              'whitespace-nowrap transition-colors hover:text-accent',
+              current === link.href ? 'text-accent font-bold' : 'text-ink',
+            ]}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<script>
+  // مبدّل الثيمات: ثلاثة ثيمات فقط، يُحفظ الاختيار محليًا.
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-btn]')
+  const apply = (theme: string) => {
+    document.documentElement.dataset.theme = theme
+    try {
+      localStorage.setItem('qz-theme', theme)
+    } catch (e) {
+      /* تجاهل */
+    }
+    buttons.forEach((b) => {
+      const active = b.dataset.themeBtn === theme
+      b.classList.toggle('bg-accent', active)
+      b.classList.toggle('text-accent-ink', active)
+    })
+  }
+  buttons.forEach((b) => b.addEventListener('click', () => apply(b.dataset.themeBtn || 'green')))
+  apply(document.documentElement.dataset.theme || 'green')
+</script>

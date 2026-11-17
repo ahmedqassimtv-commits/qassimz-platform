@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import EmptyState from '../components/EmptyState.astro'
+import { books } from '../data/space'
+---
+
+<BaseLayout title="الكتب" description="مكتبة قَاسِمز — كتب مختارة.">
+  <section class="mx-auto max-w-6xl px-5 pt-16">
+    <h1 data-headline class="font-display text-4xl font-black md:text-5xl">الكتب</h1>
+    <p class="mt-3 text-ink-dim">مكتبة قَاسِمز — كتب مختارة.</p>
+    <div class="mt-10">
+      {books.length === 0 ? (
+        <EmptyState
+          title="المكتبة فارغة حتى الآن"
+          body="لم تُضف أي كتب بعد. حين تتوفر كتب حقيقية ستظهر هنا بغلافها ووصفها."
+        />
+      ) : (
+        <div class="grid gap-5 md:grid-cols-3">
+          {books.map((book) => (
+            <article class="card p-7">
+              <h2 class="font-display text-xl font-black">{book.title}</h2>
+              <p class="mt-1 text-sm text-ink-dim">{book.author} · {book.category}</p>
+              <p class="mt-2 text-ink-dim">{book.description}</p>
+            </article>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

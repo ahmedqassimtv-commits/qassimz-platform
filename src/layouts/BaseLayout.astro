@@ -1,0 +1,76 @@
+---
+import Navbar from '../components/Navbar.astro'
+import '../styles/global.css'
+
+interface Props {
+  title: string
+  description?: string
+}
+
+const { title, description = 'قَاسِمز — مساحة للصورة، والحكاية التي وراءها.' } = Astro.props
+const siteTitle = title === 'الرئيسية' ? 'قَاسِمز — Qasimz' : `${title} | قَاسِمز`
+---
+
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="green">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{siteTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="أحمد قاسم" />
+    <meta property="og:title" content={siteTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="قَاسِمز" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Noto+Sans+Arabic:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- الثيم قبل الرسم: يمنع وميض الثيم الافتراضي -->
+    <script is:inline>
+      try {
+        const saved = localStorage.getItem('qz-theme')
+        if (saved === 'green' || saved === 'red' || saved === 'blue') {
+          document.documentElement.dataset.theme = saved
+        }
+      } catch (e) {
+        /* تجاهل: التخزين غير متاح */
+      }
+    </script>
+  </head>
+  <body class="min-h-screen">
+    <Navbar />
+    <main>
+      <slot />
+    </main>
+    <footer class="border-t border-line mt-24">
+      <div class="mx-auto max-w-6xl px-5 py-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="font-display text-2xl font-black">قَاسِمز</p>
+          <p class="text-ink-dim text-sm mt-1">مساحة للصورة، والحكاية التي وراءها.</p>
+          <p class="text-ink-dim text-sm">بقلم أحمد قاسم</p>
+        </div>
+        <nav class="flex flex-wrap gap-x-5 gap-y-2 text-sm" aria-label="روابط التواصل">
+          <a class="underline underline-offset-4 hover:text-accent" href="https://x.com/ahmedqassimtv" target="_blank" rel="noreferrer">إكس @ahmedqassimtv</a>
+          <a class="underline underline-offset-4 hover:text-accent" href="https://www.facebook.com/AhmedQassimTV/" target="_blank" rel="noreferrer">فيسبوك</a>
+          <a class="underline underline-offset-4 hover:text-accent" href="https://www.youtube.com/@AhmedQassimTV" target="_blank" rel="noreferrer">يوتيوب @AhmedQassimTV</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script>
+      import { initMotion, revealSections, revealHeadline } from '../lib/motion'
+
+      initMotion()
+      revealSections()
+      const headline = document.querySelector('[data-headline]')
+      if (headline) {
+        revealHeadline('[data-headline]')
+      }
+    </script>
+  </body>
+</html>

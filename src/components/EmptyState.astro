@@ -1,0 +1,13 @@
+---
+// حالة فارغة صادقة: لا محتوى مختلق — القسم ينتظر مادة حقيقية.
+interface Props {
+  title: string
+  body: string
+}
+const { title, body } = Astro.props
+---
+
+<div class="card mx-auto max-w-2xl p-10 text-center" data-reveal>
+  <p class="font-display text-3xl font-black">{title}</p>
+  <p class="mt-3 text-ink-dim">{body}</p>
+</div>

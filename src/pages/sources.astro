@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import EmptyState from '../components/EmptyState.astro'
+import { sources } from '../data/space'
+---
+
+<BaseLayout title="المصادر" description="مصادر ومراجع قَاسِمز.">
+  <section class="mx-auto max-w-6xl px-5 pt-16">
+    <h1 data-headline class="font-display text-4xl font-black md:text-5xl">المصادر</h1>
+    <p class="mt-3 text-ink-dim">مراجع ومصادر الحكايات والمقالات.</p>
+    <div class="mt-10">
+      {sources.length === 0 ? (
+        <EmptyState
+          title="لا توجد مصادر منشورة بعد"
+          body="ستظهر هنا مصادر الحكايات والمقالات حين تُضاف — كتب وأبحاث ومقالات موثّقة."
+        />
+      ) : (
+        <ul class="flex flex-col gap-4">
+          {sources.map((source) => (
+            <li class="card p-6">
+              <p class="font-display text-lg font-black">{source.title}</p>
+              <p class="text-sm text-ink-dim">{source.author} · <bdi>{source.year}</bdi> · {source.kind}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
+</BaseLayout>

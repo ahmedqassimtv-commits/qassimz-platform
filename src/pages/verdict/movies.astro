@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { reviews } from '../../data/reviews'
+
+const movies = reviews.filter((r) => r.mediaType === 'فيلم')
+---
+
+<BaseLayout title="الفِردِكت — أفلام" description="مراجعات قَاسِمز للأفلام: الوصول، كثيب الجزء الثاني.">
+  <section class="mx-auto max-w-6xl px-5 pt-16">
+    <h1 data-headline class="font-display text-4xl font-black md:text-5xl">الفِردِكت — أفلام</h1>
+    <p class="mt-3 text-ink-dim">مراجعات الأفلام — <bdi>{movies.length}</bdi> مراجعات منشورة. <a href="/verdict/series" class="font-bold text-accent">مسلسلات ←</a></p>
+
+    <div class="mt-10 grid gap-5 md:grid-cols-2">
+      {movies.map((review) => (
+        <article class="card overflow-hidden" data-reveal>
+          <a href={`https://www.youtube.com/watch?v=${review.youtubeId}`} target="_blank" rel="noreferrer">
+            <img src={`https://i.ytimg.com/vi/${review.youtubeId}/hqdefault.jpg`} alt={review.titleAr} class="h-52 w-full object-cover" loading="lazy" />
+          </a>
+          <div class="p-6">
+            <p class="text-sm text-ink-dim"><bdi>{review.date}</bdi> · {review.tags.join('، ')}</p>
+            <h2 class="font-display mt-1 text-2xl font-black">{review.titleAr} — <span dir="ltr">{review.title}</span></h2>
+            <p class="mt-2 text-ink-dim">{review.verdict}</p>
+            <p class="mt-3 font-bold text-accent">التقييم: <bdi>{review.rating} / 10</bdi></p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

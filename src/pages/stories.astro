@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { historicalStories } from '../data/stories'
+---
+
+<BaseLayout title="أرشيف الحكايات" description="حكايات حقيقية من الأرشيف: القاهرة 1932، الإسكندرية 1954، الأقصر 1968.">
+  <section class="mx-auto max-w-6xl px-5 pt-16">
+    <h1 data-headline class="font-display text-4xl font-black md:text-5xl">أرشيف الحكايات</h1>
+    <p class="mt-3 text-ink-dim">حكايات موثّقة بالصورة والتاريخ — <bdi>{historicalStories.length}</bdi> حكايات منشورة.</p>
+
+    <div class="mt-10 flex flex-col gap-10">
+      {historicalStories.map((story) => (
+        <article class="card overflow-hidden md:flex" data-reveal>
+          <img src={story.image} alt={story.title} class="h-64 w-full object-cover md:h-auto md:w-2/5" loading="lazy" />
+          <div class="p-7">
+            <p class="text-sm font-bold text-accent">
+              <bdi>{story.year}</bdi> — {story.era} · {story.location}
+            </p>
+            <h2 class="font-display mt-2 text-2xl font-black">{story.title}</h2>
+            <p class="mt-2 text-ink-dim">{story.caption}</p>
+            <p class="mt-4 leading-8">{story.story}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

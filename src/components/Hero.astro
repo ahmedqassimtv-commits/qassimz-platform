@@ -1,0 +1,94 @@
+---
+// بطل الرئيسية: مشهد Three.js واحد كسول (يُحمَّل عند الحاجة فقط)
+// + عنوان يُكشف عبر GSAP (كلمات/أسطر، بعد جاهزية الخطوط).
+interface Props {
+  headline: string
+  description: string
+}
+const { headline, description } = Astro.props
+---
+
+<section id="hero" class="relative overflow-hidden">
+  <div id="hero-canvas" class="absolute inset-0 opacity-60" aria-hidden="true"></div>
+  <div class="relative mx-auto max-w-6xl px-5 pt-28 pb-20 md:pt-36 md:pb-28">
+    <p class="text-sm font-bold text-accent">قَاسِمز — Qasimz</p>
+    <h1 data-headline class="font-display mt-4 max-w-3xl text-4xl font-black md:text-6xl">
+      {headline}
+    </h1>
+    <p class="mt-6 max-w-2xl text-lg text-ink-dim">{description}</p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href="/stories" class="rounded-full bg-accent px-6 py-3 font-bold text-accent-ink">تصفّح الحكايات</a>
+      <a href="/videos" class="rounded-full border border-line px-6 py-3 font-bold">شاهد الفيديوهات</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Three.js كسول: يُستورد فقط عند ظهور البطل، ويُعطَّل مع تقليل الحركة.
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const mount = document.getElementById('hero-canvas')
+
+  if (mount && !prefersReduced) {
+    const start = async () => {
+      const THREE = await import('three')
+      const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#34d399'
+
+      const scene = new THREE.Scene()
+      const camera = new THREE.PerspectiveCamera(55, mount.clientWidth / Math.max(mount.clientHeight, 1), 0.1, 100)
+      camera.position.z = 7
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+      renderer.setSize(mount.clientWidth, mount.clientHeight)
+      mount.appendChild(renderer.domElement)
+
+      // شبكة نقاط خفيفة + مجسّم سلكي يدور ببطء — لحظة ثلاثية واحدة.
+      const pointsGeo = new THREE.BufferGeometry()
+      const count = 420
+      const pos = new Float32Array(count * 3)
+      for (let i = 0; i < count * 3; i++) pos[i] = (Math.random() - 0.5) * 14
+      pointsGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3))
+      const points = new THREE.Points(
+        pointsGeo,
+        new THREE.PointsMaterial({ color: accent, size: 0.045, transparent: true, opacity: 0.75 }),
+      )
+      scene.add(points)
+
+      const knot = new THREE.Mesh(
+        new THREE.TorusKnotGeometry(1.5, 0.42, 120, 16),
+        new THREE.MeshBasicMaterial({ color: accent, wireframe: true, transparent: true, opacity: 0.35 }),
+      )
+      knot.position.x = 2.6
+      scene.add(knot)
+
+      let raf = 0
+      let visible = true
+      const observer = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting
+      })
+      observer.observe(mount)
+
+      const tick = () => {
+        raf = requestAnimationFrame(tick)
+        if (!visible) return
+        knot.rotation.x += 0.0016
+        knot.rotation.y += 0.0022
+        points.rotation.y += 0.0004
+        renderer.render(scene, camera)
+      }
+      tick()
+
+      window.addEventListener('resize', () => {
+        camera.aspect = mount.clientWidth / Math.max(mount.clientHeight, 1)
+        camera.updateProjectionMatrix()
+        renderer.setSize(mount.clientWidth, mount.clientHeight)
+      })
+    }
+
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => void start(), { timeout: 2500 })
+    } else {
+      setTimeout(() => void start(), 400)
+    }
+  }
+</script>

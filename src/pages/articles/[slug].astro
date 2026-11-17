@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content'
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles')
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }))
+}
+
+const { article } = Astro.props
+const { Content } = await article.render()
+---
+
+<BaseLayout title={article.data.title} description={article.data.excerpt}>
+  <article class="mx-auto max-w-3xl px-5 pt-16">
+    <p class="text-sm text-ink-dim">{article.data.category} · <bdi>{article.data.date}</bdi></p>
+    <h1 data-headline class="font-display mt-3 text-4xl font-black md:text-5xl">{article.data.title}</h1>
+    <div class="prose-qz mt-8">
+      <Content />
+    </div>
+    <p class="mt-10 border-t border-line pt-6 text-sm text-ink-dim">
+      بقلم أحمد قاسم — <a href="/articles" class="font-bold text-accent">كل المقالات ←</a>
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .prose-qz :global(h2) {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 1.6rem;
+    margin-top: 2.5rem;
+  }
+  .prose-qz :global(h3) {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.25rem;
+    margin-top: 2rem;
+  }
+  .prose-qz :global(p) {
+    margin-top: 1.1rem;
+    line-height: 2;
+  }
+  .prose-qz :global(blockquote) {
+    border-inline-start: 3px solid var(--accent);
+    padding-inline-start: 1rem;
+    margin-top: 1.5rem;
+    color: var(--ink-dim);
+    font-weight: 700;
+  }
+  .prose-qz :global(ul) {
+    list-style: disc;
+    padding-inline-start: 1.5rem;
+    margin-top: 1rem;
+  }
+  .prose-qz :global(li) {
+    margin-top: 0.4rem;
+  }
+</style>
